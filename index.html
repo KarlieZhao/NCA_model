@@ -3,28 +3,21 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>New CharActers</title>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.3.0/dist/tf.min.js"></script>
 
 </head>
 
-
 <body>
-  <br /> <br /> <br /> <br />
+  <!-- <br /> <br /> <br /> <br /> -->
+
+  <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 10%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+
   <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
-
-<p class="canvas-container">
-  <canvas id='canvas' style="border: 1px solid black; image-rendering: pixelated;"></canvas>
-</p>
-
-
   <script>
     "use strict";
 
@@ -124,6 +117,10 @@
       canvas.height = h;
       canvas.style.width = `${w*scale}px`;
       canvas.style.height = `${h*scale}px`;
+      canvas.style.display = 'block';
+
+      canvas.style.marginLeft = "40%";
+      canvas.style.marginRight = "20%";
 
       canvas.onmousedown = e => {
         const x = Math.floor(e.clientX / scale);
@@ -173,14 +170,14 @@
     }
     run();
   </script>
+
   <!-- Page footer -->
-  <footer>
+  <!-- <footer>
 
     <p style=" position: fixed;left: 0;
    bottom: 0; width: 98%; text-align: right;">
-      Copyright &copy; 2021 KarlieZhao
     </p>
-  </footer>
+  </footer> -->
 </body>
 
 

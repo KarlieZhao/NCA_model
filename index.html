@@ -11,13 +11,13 @@
 </head>
 
 <body>
-  <!-- <br /> <br /> <br /> <br /> -->
-
   <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 10%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
   <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
+  <p style="text-align:center;">Please wait for a while for the CA to load and generate...<br>
+  Shift + LMB to plant a seed</P>
   <script>
     "use strict";
 
@@ -123,8 +123,9 @@
       canvas.style.marginRight = "20%";
 
       canvas.onmousedown = e => {
-        const x = Math.floor(e.clientX / scale);
-        const y = Math.floor(e.clientY / scale);
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((event.clientX - rect.left) / scale);
+        const y = Math.floor((event.clientY - rect.top) / scale);
         if (e.buttons == 1) {
           if (e.shiftKey) {
             plantSeed(x, y);
@@ -134,8 +135,10 @@
         }
       }
       canvas.onmousemove = e => {
-        const x = Math.floor(e.clientX / scale);
-        const y = Math.floor(e.clientY / scale);
+        const rect = canvas.getBoundingClientRect();
+
+        const x = Math.floor((event.clientX - rect.left) / scale);
+        const y = Math.floor((event.clientY - rect.top) / scale);
         if (e.buttons == 1 && !e.shiftKey) {
           damage(x, y, 8);
         }

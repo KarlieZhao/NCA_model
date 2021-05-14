@@ -11,18 +11,25 @@
 </head>
 
 <body>
-  <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 10%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
+
+
+  <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+
+  <select name="selector" id="selector" style="margin-left: 47%;" onchange="run()">
+    <option value="qiu_8000">秋</option>
+    <option value="fei_8000">飛</option>
+    <option value="fei_seal_8000">飛-篆書(seal)</option>
+
+  </select>
   <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
   <p style="text-align:center;">Please wait for a while for the CA to load and generate...<br>
-  Shift + LMB to plant a seed</P>
+    Shift + LMB to plant a seed</P>
   <script>
     "use strict";
-
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
     const parseConsts = model_graph => {
       const dtypes = {
         'DT_INT32': ['int32', 'intVal', Int32Array],
@@ -60,10 +67,11 @@
     }
 
     const run = async () => {
-      const r = await fetch("outputData/qiu_8000.json");
+      var fileName = document.getElementById("selector").value;
+      const r = await fetch("outputData/" + fileName + ".json");
       const consts = parseConsts(await r.json());
 
-      const model = await tf.loadGraphModel("outputData/qiu_8000.json");
+      const model = await tf.loadGraphModel("outputData/" + fileName + ".json");
       Object.assign(model.weights, consts);
 
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
@@ -120,7 +128,7 @@
       canvas.style.display = 'block';
 
       canvas.style.marginLeft = "40%";
-      canvas.style.marginRight = "20%";
+      canvas.style.marginRight = "5%";
 
       canvas.onmousedown = e => {
         const rect = canvas.getBoundingClientRect();
@@ -170,6 +178,7 @@
         requestAnimationFrame(render);
       }
       render();
+
     }
     run();
   </script>

@@ -67,10 +67,10 @@
     }
 
     const run = async () => {
-      const r = await fetch("qiu_8000.json");
+      const r = await fetch("outputData/qiu_8000.json");
       const consts = parseConsts(await r.json());
 
-      const model = await tf.loadGraphModel("qiu_8000.json");
+      const model = await tf.loadGraphModel("outputData/qiu_8000.json");
       Object.assign(model.weights, consts);
 
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);

@@ -12,8 +12,6 @@
 
 <body>
 
-
-
   <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
   <select name="selector" id="selector" style="margin-left: 47%;" onchange="run()">
@@ -87,12 +85,12 @@
           [D2 - 1, D2], //height
           [D2 - 1, D2], //width
           [0, 0]
-        ]);
+        ]); //fill in the array (?
         return a;
       });
 
       const state = tf.variable(initState);
-      const [_, h, w, ch] = state.shape;
+      const [_, h, w, ch] = state.shape;  // => shape of the initialstate tensor: (4,2)
 
       const damage = (x, y, r) => {
         tf.tidy(() => {
@@ -104,8 +102,8 @@
       }
 
       const plantSeed = (x, y) => {
-        const x2 = w - x - seed.shape[2];
-        const y2 = h - y - seed.shape[1];
+        const x2 = w - x/2 - seed.shape[2]; //seed.shape[2] => w
+        const y2 = h - y /2- seed.shape[1];
         if (x < 0 || x2 < 0 || y2 < 0 || y2 < 0)
           return;
         tf.tidy(() => {
@@ -115,6 +113,7 @@
             [x, x2],
             [0, 0]
           ]);
+
           state.assign(state.add(a));
         });
       }

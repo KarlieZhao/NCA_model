@@ -25,11 +25,12 @@
   <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
-  <p style="text-align:center;">Please wait for a while for the CA to load and generate...<br>
+  <p style="text-align:center;">Please wait for the CA to load and generate...<br>
     Shift + LMB to plant a seed</P>
   <script>
     "use strict";
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
     const parseConsts = model_graph => {
       const dtypes = {
         'DT_INT32': ['int32', 'intVal', Int32Array],
@@ -78,12 +79,13 @@
       seed = tf.tensor(seed, [1, 1, 1, 16]);
 
       const D = 96;
+
       const initState = tf.tidy(() => {
-        const D2 = D / 2;
+        const D2 = D/2;
         const a = seed.pad([
           [0, 0],
-          [D2 - 1, D2],
-          [D2 - 1, D2],
+          [D2 - 1, D2], //height
+          [D2 - 1, D2], //width
           [0, 0]
         ]);
         return a;

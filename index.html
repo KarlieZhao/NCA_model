@@ -79,7 +79,7 @@
       const D = 96;
 
       const initState = tf.tidy(() => {
-        const D2 = D/2;
+        const D2 = D / 2;
         const a = seed.pad([
           [0, 0],
           [D2 - 1, D2], //height
@@ -90,7 +90,7 @@
       });
 
       const state = tf.variable(initState);
-      const [_, h, w, ch] = state.shape;  // => shape of the initialstate tensor: (4,2)
+      const [_, h, w, ch] = state.shape; // => shape of the initialstate tensor: (4,2)
 
       const damage = (x, y, r) => {
         tf.tidy(() => {
@@ -102,8 +102,8 @@
       }
 
       const plantSeed = (x, y) => {
-        const x2 = w - x/2 - seed.shape[2]; //seed.shape[2] => w
-        const y2 = h - y /2- seed.shape[1];
+        const x2 = w - x - seed.shape[2]; //seed => [1,1,1,16]
+        const y2 = h - y - seed.shape[1];
         if (x < 0 || x2 < 0 || y2 < 0 || y2 < 0)
           return;
         tf.tidy(() => {
@@ -113,7 +113,6 @@
             [x, x2],
             [0, 0]
           ]);
-
           state.assign(state.add(a));
         });
       }
@@ -139,7 +138,7 @@
           if (e.shiftKey) {
             plantSeed(x, y);
           } else {
-            damage(x, y, 8);
+            damage(x, y, 5);
           }
         }
       }
@@ -149,7 +148,7 @@
         const x = Math.floor((event.clientX - rect.left) / scale);
         const y = Math.floor((event.clientY - rect.top) / scale);
         if (e.buttons == 1 && !e.shiftKey) {
-          damage(x, y, 8);
+          damage(x, y, 5);
         }
       }
 
@@ -171,10 +170,20 @@
           const rgba = state.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
           const a = state.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
           const img = tf.tensor(1.0).sub(a).add(rgba).mul(255);
-          const rgbaBytes = new Uint8ClampedArray(img.dataSync());
+          const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h => rgba: why all are 255?
+
+
+          // process the colour data to fit our needs
+          // for (var i = 0; i < rgbaBytes.length; i++) {
+          //   if (rgbaBytes[i] != 255) {
+          //     console.log(i + "," + rgbaBytes[i]);
+          //   }
+          // }
           return new ImageData(rgbaBytes, w, h);
         });
+
         ctx.putImageData(imageData, 0, 0);
+        //-------------
 
         requestAnimationFrame(render);
       }

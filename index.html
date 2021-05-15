@@ -15,9 +15,9 @@
   <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
   <select name="selector" id="selector" style="margin-left: 47%;" onchange="run()">
-    <option value="qiu_8000">秋</option>
-    <option value="fei_8000">飛</option>
-    <option value="fei_seal_8000">飛-篆書(seal)</option>
+    <option value="feng_seal_12000">风</option>
+    <option value="ya_seal_12000">雅</option>
+    <option value="song_seal_12000">颂</option>
 
   </select>
   <p style="font-size: 30px; text-align:center; font-style: bold;">
@@ -110,7 +110,7 @@
           const a = seed.pad([
             [0, 0],
             [y, y2],
-            [x, x2],
+            [x, x2], //(x+x2) has to be (w-seed.shape[2]) which equals to w-1; but if add a to x and subtract it back on x2, the seed will move a cells to the left
             [0, 0]
           ]);
           state.assign(state.add(a));

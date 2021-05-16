@@ -19,16 +19,17 @@
       <li> Experiment #2 | Chinese Is An Outdated Language
     </ul>
   </div>
+  <div class = "rightFloating">
 
-  <p style="font-size: 30px;text-align:center; font-style: bold;">
+  <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
   <p style="text-align:center;">Please wait for the CA to load and generate...<br>
     Shift + LMB to plant a seed</P>
 
-  <canvas id='canvas' style="display: block; margin-left: 39%; image-rendering: pixelated;"></canvas>
+  <canvas id='canvas' style="border: 1px solid grey;margin-left: 20%; display: block; image-rendering: pixelated;"></canvas>
   <!-- border: 1px solid black; -->
-
+</div>
 
   <script>
     "use strict";
@@ -141,7 +142,7 @@
       canvas.style.height = `${h*scale}px`;
       canvas.style.display = 'block';
 
-      canvas.style.marginLeft = "39%";
+      canvas.style.marginLeft = "20%";
       // canvas.style.marginRight = "5%";
 
       canvas.onmousedown = e => {

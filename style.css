@@ -16,6 +16,10 @@
   line-height: 2em;
 }
 
+.rightFloating{
+  float:right;
+width: 60%;
+}
 a{
   color:black;
 }

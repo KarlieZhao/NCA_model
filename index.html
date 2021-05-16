@@ -12,9 +12,9 @@
 
 <body>
 
-  <canvas id='canvas' style="display: block; margin-left: 40%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+  <canvas id='canvas' style="display: block; margin-left: 28%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
-  <select name="selector" id="selector" style="margin-left: 47%;" onchange="run()">
+  <select name="selector" id="selector" style="margin-left: 47%;" onchange="setup()">
     <option value="yue_sim">风</option>
     <option value="feng_trad">雅</option>
     <option value="feng_sim">颂</option>
@@ -65,24 +65,38 @@
       return consts;
     }
 
-    const run = async () => {
-      var fileName = document.getElementById("selector").value;
-      const r = await fetch("outputData/" + fileName + ".json");
-      const consts = parseConsts(await r.json());
+    const setup = async () => {
+      var files = [];
+      files[0] = "song_seal_12000";
+      files[1] = "ya_seal_12000";
 
-      const model = await tf.loadGraphModel("outputData/" + fileName + ".json");
-      Object.assign(model.weights, consts);
+      const models=[];
+      for (let i = 0; i < files.length; i++) {
+        var r = await fetch("outputData/" + files[i] + ".json");
+        var consts = parseConsts(await r.json());
+
+         models[i] = await tf.loadGraphModel("outputData/" + files[i] + ".json");
+        Object.assign(models[i].weights, consts);
+
+      }
+
+      // var fileName = document.getElementById("selector").value;
+      // const r = await fetch("outputData/" + fileName + ".json");
+      // const consts = parseConsts(await r.json());
+      //
+      // const model = await tf.loadGraphModel("outputData/" + fileName + ".json");
+      // Object.assign(model.weights, consts);
 
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
       seed = tf.tensor(seed, [1, 1, 1, 16]);
 
-      const D = 96;
+      const D = 96 * 2;
 
       const initState = tf.tidy(() => {
         const D2 = D / 2;
         const a = seed.pad([
           [0, 0],
-          [D2 - 1, D2], //height
+          [D2 - 1 - 50, 50 + D2], //height
           [D2 - 1, D2], //width
           [0, 0]
         ]); //fill in the array (?
@@ -127,13 +141,14 @@
       canvas.style.height = `${h*scale}px`;
       canvas.style.display = 'block';
 
-      canvas.style.marginLeft = "40%";
+      canvas.style.marginLeft = "28%";
       canvas.style.marginRight = "5%";
 
       canvas.onmousedown = e => {
         const rect = canvas.getBoundingClientRect();
         const x = Math.floor((event.clientX - rect.left) / scale);
         const y = Math.floor((event.clientY - rect.top) / scale);
+        console.log(x + "," + y);
         if (e.buttons == 1) {
           if (e.shiftKey) {
             plantSeed(x, y);
@@ -151,10 +166,13 @@
           damage(x, y, 5);
         }
       }
+      var stepcount = 0;
+      var plantY = h / 2;
 
       function step() {
+        stepcount++;
         tf.tidy(() => {
-          state.assign(model.execute({
+          state.assign(models[0].execute({
             x: state,
             fire_rate: tf.tensor(0.5),
             angle: tf.tensor(0.0),
@@ -164,8 +182,15 @@
       }
 
       function render() {
+        //update every frame
         step();
+        if (stepcount % 300 == 0 && stepcount <= 1200 && stepcount > 100) {
+          plantY += 15;
+          console.log(plantY);
+          plantSeed(w / 2 - 1, plantY);
+        }
 
+        //write in colour data
         const imageData = tf.tidy(() => {
           const rgba = state.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
           const a = state.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
@@ -173,7 +198,7 @@
           const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h => rgba: why all are 255?
 
 
-          // process the colour data to fit our needs
+          // process the colour data here to fit our needs
           // for (var i = 0; i < rgbaBytes.length; i++) {
           //   if (rgbaBytes[i] != 255) {
           //     console.log(i + "," + rgbaBytes[i]);
@@ -190,7 +215,7 @@
       render();
 
     }
-    run();
+    setup();
   </script>
 
   <!-- Page footer -->

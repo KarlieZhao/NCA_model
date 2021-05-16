@@ -6,3 +6,16 @@
 #canvas {
    display: inline;
 }
+
+.leftFloating{
+  float:left;
+  text-align: left;
+  margin-left: 4%;
+  margin-top: 10%;
+  width: 30%;
+  line-height: 2em;
+}
+
+a{
+  color:black;
+}

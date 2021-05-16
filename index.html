@@ -19,14 +19,17 @@
       <li> Experiment #2 | Chinese Is An Outdated Language
     </ul>
   </div>
-  <canvas id='canvas' style="display: block; margin-left: 39%; margin-top: 5%;  image-rendering: pixelated;"></canvas>
-  <!-- border: 1px solid black; -->
 
-  <p style="font-size: 30px; text-align:center; font-style: bold;">
+  <p style="font-size: 30px;margin-top: 40px;text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
   <p style="text-align:center;">Please wait for the CA to load and generate...<br>
     Shift + LMB to plant a seed</P>
+
+  <canvas id='canvas' style="display: block; margin-left: 39%; image-rendering: pixelated;"></canvas>
+  <!-- border: 1px solid black; -->
+
+
   <script>
     "use strict";
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -87,7 +90,7 @@
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
       seed = tf.tensor(seed, [1, 1, 1, 16]);
 
-      const D = 96;
+      const D = 150;
 
       const initState = tf.tidy(() => {
         const D2 = D / 2;
@@ -139,7 +142,7 @@
       canvas.style.display = 'block';
 
       canvas.style.marginLeft = "39%";
-      canvas.style.marginRight = "5%";
+      // canvas.style.marginRight = "5%";
 
       canvas.onmousedown = e => {
         const rect = canvas.getBoundingClientRect();

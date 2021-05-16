@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <title>New CharActers</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.3.0/dist/tf.min.js"></script>
 
 </head>
@@ -76,10 +76,11 @@
       var models = [];
 
       for (let i = 0; i < files.length; i++) {
-        var r = await fetch("outputData/simplified/" + files[i] + ".json");
+        var r = await fetch("../output/simplified/" + files[i] + ".json");
         consts[i] = parseConsts(await r.json());
-        models[i] = await tf.loadGraphModel("outputData/simplified/" + files[i] + ".json");
+        models[i] = await tf.loadGraphModel("../output/simplified/" + files[i] + ".json");
       }
+
       Object.assign(models[0].weights, consts[0]);
 
       // var fileName = document.getElementById("selector").value;
@@ -178,8 +179,9 @@
         if (stepcount % 300 == 0 && stepcount > 100 && stepcount < 1201) {
           console.log(stepcount);
           modelIndex++;
-          Object.assign(models[modelIndex].weights, consts[modelIndex]);
+          modelIndex = modelIndex % files.length;
 
+          Object.assign(models[modelIndex].weights, consts[modelIndex]);
         }
         tf.tidy(() => { //tf.tidy() dispose the non-returned results/tensors
           state.assign(models[modelIndex].execute({
@@ -206,7 +208,6 @@
           const a = state.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
           const img = tf.tensor(1.0).sub(a).add(rgba).mul(255);
           const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h => rgba: why all are 255?
-
 
           // process the colour data here to fit our needs
           // for (var i = 0; i < rgbaBytes.length; i++) {

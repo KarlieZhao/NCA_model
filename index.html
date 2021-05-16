@@ -14,7 +14,7 @@
   <div class="leftFloating">
     <ul>
       <li> <a href="experiments/single_char_demo.html">Single Character Example | 單字示例</a>
-      <li> Multiple Characters Example | 多字示例
+      <li> <a href="experiments/multi_chars.html">Multiple Characters Example | 多字示例</a>
       <li> Experiment #1 | New Poem
       <li> Experiment #2 | Chinese Is An Outdated Language
     </ul>
@@ -174,8 +174,8 @@
 
       function step() {
         stepcount++;
-        if (stepcount % 700 == 0 && stepcount > 100) {
-          console.log(stepcount);
+        if (stepcount % 700 == 0 && stepcount > 1) {
+          //console.log(stepcount);
           modelIndex++;
           modelIndex = modelIndex % files.length;
           Object.assign(models[modelIndex].weights, consts[modelIndex]);

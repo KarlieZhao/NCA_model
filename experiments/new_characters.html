@@ -142,7 +142,7 @@
         tf.tidy(() => {
           const rx = tf.range(0, w).sub(x).div(r).square().expandDims(0);
           const ry = tf.range(0, h).sub(y).div(r).square().expandDims(1);
-
+          Object.assign(models[modelIndex], consts[modelIndex])
           const mask = rx.add(ry).greater(1.0).shape(consts[3], 2);
           state.assign(state.mul(mask));
         });
@@ -213,7 +213,6 @@
 
 
       function step() {
-        // stepcount++;
         // if (stepcount % 300 == 0 && stepcount > 100) {
         //
         //   modelIndex++;
@@ -222,19 +221,22 @@
         // }
 
         tf.tidy(() => { //tf.tidy() dispose the non-returned results/tensors
-          state.assign(models[modelIndex].execute({
+          state.assign(models[modelIndex].execute({ //.execute(inputs, outputs?)
             x: state,
             fire_rate: tf.tensor(0.5), //borning rate?
             angle: tf.tensor(0.0), //rotation angle
             step_size: tf.tensor(1.0)
           }, ['Identity']));
         });
+        console.log(Object.keys(models[modelIndex]));
       }
 
 
       function render() {
-        //update every frame
-        if (isPlaying) step();
+        stepcount++;
+        if (stepcount % 30 == 0) {
+          if (isPlaying) step();
+        }
 
         //write in colour data
         const imageData = tf.tidy(() => {

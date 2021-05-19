@@ -9,7 +9,7 @@
 
 .center {
   text-align: center;
-  margin-left: 20%;
+  width:auto;
 }
 
 .index_center {
@@ -27,12 +27,14 @@
 }
 
 .text {
-  line-height: 2em;
+  line-height: 2.3em;
+  font-size: 1em;
 }
 
 .rightFloating {
   float: right;
   width: 60%;
+  margin-right: 5%;
 }
 
 a {
@@ -55,10 +57,15 @@ canvas {
   grid-row-gap: 0px;
 }
 
+.description {
+  line-height: 2.2em;
+  font-size:1.1em;
+}
+
 .leftCol {
   grid-area: 1 / 1 / 3 / 5;
 }
 
 .main {
-  grid-area: 1 / 2 / 5 / 5;
+  grid-area: 1 / 2 / 6 / 7;
 }

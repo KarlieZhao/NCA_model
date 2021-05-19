@@ -12,13 +12,12 @@
 
 <body>
 
-  <canvas id='canvas'class="center" style="display: inline-block; margin-left: 20%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+  <canvas id='canvas' class="center" style="display: inline-block; margin-left: 20%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
   <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
-  <p style="text-align:center;">Please wait for the CA to load and generate...<br>
-    Shift + LMB to plant a seed</P>
+
   <script>
     "use strict";
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -61,34 +60,34 @@
 
     const setup = async () => {
       var files = [];
-      files[0] = "hanzi_2100";
+      files[0] = "bu";
+      files[1] = "hu";
+      files[2] = "ye_double_14000";
+      files[3] = "jiang";
+      files[4] = "wang";
+      files[5] = "xie";
 
       var consts = [];
       var models = [];
 
       for (let i = 0; i < files.length; i++) {
-        var r = await fetch("../output/trad/" + files[i] + ".json");
+        var r = await fetch("data/" + files[i] + ".json");
         consts[i] = parseConsts(await r.json());
-        models[i] = await tf.loadGraphModel("../output/trad/" + files[i] + ".json");
+        models[i] = await tf.loadGraphModel("data/" + files[i] + ".json");
+        Object.assign(models[i].weights, consts[i]);
       }
 
-      Object.assign(models[0].weights, consts[0]);
-
-      // var fileName = document.getElementById("selector").value;
-      // const r = await fetch("outputData/" + fileName + ".json");
-      // const consts = parseConsts(await r.json());
-      //
-      // const model = await tf.loadGraphModel("outputData/" + fileName + ".json");
-      // Object.assign(model.weights, consts);
+      let initial_seed = new Array(16).fill(0);
+      initial_seed = tf.tensor(initial_seed, [1, 1, 1, 16]);
 
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
       seed = tf.tensor(seed, [1, 1, 1, 16]);
 
-      const D = 96*2;
+      const D = 96 * 2;
 
       const initState = tf.tidy(() => {
         const D2 = D / 2;
-        const a = seed.pad([
+        const a = initial_seed.pad([
           [0, 0],
           [D2 - 1, D2], //height
           [D2 - 1, D2], //width
@@ -135,7 +134,7 @@
       canvas.style.height = `${h*scale}px`;
       canvas.style.display = 'block';
 
-       canvas.style.marginLeft = "28%";
+      canvas.style.marginLeft = "28%";
       canvas.style.marginRight = "5%";
 
       canvas.onmousedown = e => {
@@ -163,9 +162,8 @@
       var stepcount = 0;
       var plantY = h / 2;
 
-      var modelIndex = 0;
+      var modelIndex = 1;
       var stepcount = 0;
-
 
       function step() {
         stepcount++;
@@ -185,16 +183,45 @@
         });
       }
 
+      let seedx = 30;
+      let seedx_initial = 30;
+      let seedy = 15;
+      let lineH = 30;
+      let spacing = 60;
+
       function render() {
         //update every frame
         step();
         stepcount++;
-        if (stepcount % 700 == 0 && stepcount > 1) {
-          //console.log(stepcount);
-          modelIndex++;
-          modelIndex = modelIndex % files.length;
-          Object.assign(models[modelIndex].weights, consts[modelIndex]);
+        if (stepcount % 100 == 0) {
+          // console.log(seedx + "," + seedy);
+          plantSeed(seedx, seedy);
+          seedx += spacing;
+          spacing -= spacing > 4 ? 1 : 0;;
 
+          if (seedy >= 180) {
+            seedy = 15;
+            seedx_initial = 30;
+            seedx = 30;
+            lineH = 30;
+            spacing = 60;
+
+            const x = tf.range(0, w).sub(seedx).div(w * 2).square().expandDims(0);
+            const y = tf.range(0, h).sub(seedy).div(h * 2).square().expandDims(1);
+            const clear = x.add(y).greater(1.0).expandDims(2);
+            state.assign(state.mul(clear));
+
+            modelIndex++;
+            modelIndex = modelIndex % files.length;
+
+          } else if (seedx >= 200) {
+            seedx_initial -= 4; // = seedx_initial == 15 ? 30 : 15;
+            seedx = seedx_initial;
+
+            //  spacing = 30;
+            seedy += lineH;
+            lineH -= lineH > 5 ? 2 : 0;
+          }
         }
 
         //write in colour data
@@ -203,13 +230,6 @@
           const a = state.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
           const img = tf.tensor(1.0).sub(a).add(rgba).mul(255);
           const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h => rgba: why all are 255?
-
-          // process the colour data here to fit our needs
-          // for (var i = 0; i < rgbaBytes.length; i++) {
-          //   if (rgbaBytes[i] != 255) {
-          //     console.log(i + "," + rgbaBytes[i]);
-          //   }
-          // }
           return new ImageData(rgbaBytes, w, h);
         });
 

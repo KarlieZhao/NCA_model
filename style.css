@@ -37,6 +37,12 @@
   margin-right: 5%;
 }
 
+.rightFloating2 {
+  float: right;
+  width: 70%;
+  margin-right: 5%;
+}
+
 a {
   color: black;
 }
@@ -52,7 +58,7 @@ canvas {
 .parent {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 }
@@ -67,5 +73,5 @@ canvas {
 }
 
 .main {
-  grid-area: 1 / 2 / 6 / 7;
+  grid-area: 1 / 2 / 4/ 6;
 }

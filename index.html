@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  <br><br><br>
+<br>
   <div class="index_center">
     <canvas id='canvas0'>0</canvas>
     <canvas id='canvas1'>1</canvas>
@@ -35,7 +35,8 @@
       <a href="experiments/multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a><br>
       <a href="experiments/new_characters.html"> Experiment #2 New Characters | 新漢字 </a><br>
       <a href="experiments/theillegiblestrokes.html"> Experiment #3 The Illegible Strokes, the Vicissitudes of the World | 讀不出的桑田滄海，沧海桑田 </a><br>
-      <br>
+      <a href="experiments/experiment4.html"> Experiment #4 ... </a><br>
+<br>
       <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
 
     </div>
@@ -122,9 +123,9 @@
       var models = [];
 
       for (let i = 0; i < files.length; i++) {
-        var r = await fetch("../output/trad/" + files[i] + ".json");
+        var r = await fetch("output/trad/" + files[i] + ".json");
         consts[i] = parseConsts(await r.json());
-        models[i] = await tf.loadGraphModel("../output/trad/" + files[i] + ".json");
+        models[i] = await tf.loadGraphModel("output/trad/" + files[i] + ".json");
         Object.assign(models[i].weights, consts[i]);
       }
       // console.log(models[modelIndex].weights);

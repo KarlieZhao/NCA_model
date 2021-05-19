@@ -12,7 +12,7 @@
 
 <body>
 
-  <canvas id='canvas' style="display: block; margin-left: 28%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+  <canvas id='canvas'class="center" style="display: inline-block; margin-left: 20%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
   <p style="font-size: 30px; text-align:center; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
@@ -61,18 +61,15 @@
 
     const setup = async () => {
       var files = [];
-      files[0] = "feng_seal_12000";
-      files[1] = "ya_seal_12000";
-      files[2] = "song_seal_12000";
-      files[3] = "hua_seal_12000";
+      files[0] = "hanzi_2100";
 
       var consts = [];
       var models = [];
 
       for (let i = 0; i < files.length; i++) {
-        var r = await fetch("../output/seal/" + files[i] + ".json");
+        var r = await fetch("../output/trad/" + files[i] + ".json");
         consts[i] = parseConsts(await r.json());
-        models[i] = await tf.loadGraphModel("../output/seal/" + files[i] + ".json");
+        models[i] = await tf.loadGraphModel("../output/trad/" + files[i] + ".json");
       }
 
       Object.assign(models[0].weights, consts[0]);
@@ -87,7 +84,7 @@
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
       seed = tf.tensor(seed, [1, 1, 1, 16]);
 
-      const D = 96;
+      const D = 96*2;
 
       const initState = tf.tidy(() => {
         const D2 = D / 2;
@@ -138,7 +135,7 @@
       canvas.style.height = `${h*scale}px`;
       canvas.style.display = 'block';
 
-      canvas.style.marginLeft = "28%";
+       canvas.style.marginLeft = "28%";
       canvas.style.marginRight = "5%";
 
       canvas.onmousedown = e => {

@@ -11,22 +11,34 @@
 </head>
 
 <body>
+  <div class="parent">
+    <div class="center main">
+<br>
+  <canvas id='canvas' style="display: block;  margin-top: 10%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
-  <canvas id='canvas' style="display: block; margin-left: 28%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+<br>
   <button type="button" id="bt" onclick="playPause()">Pause</button>
 
-  <p style="font-size: 30px; text-align:center; font-style: bold;">
+  <p style="font-size: 30px; font-style: bold;">
     <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
   </p>
+</div>
+<div class="leftFloating leftCol">
+  <ul>
+    <li> <a href="single_char_demo.html">Single Character Example | 單字示例</a>
+    <li> <a href="multi_chars.html">Multiple Characters Example | 多字示例</a>
+    <li> Experiment #1 | New Poem
+    <li> <a href="../index.html">Back to main page | 返回主頁</a>
+  </ul>
+</div>
 
+</div>
   <script>
     "use strict";
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     var modelIndex = 2;
 
-    // converting model to graph (rules?)
     const parseConsts = model_graph => {
-
       const dtypes = {
         'DT_INT32': ['int32', 'intVal', Int32Array], //Int32Array: 32 bytes, signed, int array
         'DT_FLOAT': ['float32', 'floatVal', Float32Array]
@@ -35,19 +47,7 @@
       const consts = {};
 
       model_graph.modelTopology.node.filter(n => n.op == 'Const').forEach((node => {
-
         const v = node.attr.value.tensor;
-        //console.log(v.dtype);
-        //v => object
-
-        //tensorContent:something like: AQAAAAEAAAABAAAAAQAAAA==
-
-        //dtype: dt_int and dt_float
-
-        //tensorShape:
-        //float: dim: Array(2): {0: size: "3"; 1: size: "3"} | length: 2
-        //int: Array(1){0: size: "4" } | length: 1
-
         const [dtype, field, arrayType] = dtypes[v.dtype];
         if (!v.tensorShape.dim) { //=> dim > 0
           consts[node.name] = [tf.scalar(v[field][0], dtype)];
@@ -68,12 +68,10 @@
             }
 
             arr = new arrayType(buf.buffer);
-            //arrayType: A type that describes a JavaScript Array object => Plain arrays; read-only arrays; Tuple types.
 
           } else { //if v.tensorContent is null => 40 nodes in total
             const size = shape.reduce((a, b) => a * b);
             arr = new arrayType(size);
-
             if (size) {
               arr.fill(v[field][0]);
             }
@@ -93,27 +91,9 @@
       files[2] = "song_seal_12000";
       files[3] = "hua_seal_12000";
 
-      var consts = [];
-      var models = [];
-
-      for (let i = 0; i < files.length; i++) {
-        var r = await fetch("../output/seal/" + files[i] + ".json");
-        consts[i] = parseConsts(await r.json());
-        models[i] = await tf.loadGraphModel("../output/seal/" + files[i] + ".json");
-        //from SavedModel =>  TensorFlow.js readable
-      }
-      console.log(models[0].weights);
-      console.log(consts[0]);
-      console.log(models[modelIndex]);
-
-      Object.assign(models[modelIndex].weights, consts[modelIndex]);
-      //model weights are all the parameters (including trainable and non-trainable) of the model
-      // which are in turn all the parameters used in the layers of the model
-
+      const D = 96;
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
       seed = tf.tensor(seed, [1, 1, 1, 16]);
-
-      const D = 96;
 
       const initState = tf.tidy(() => {
         const D2 = D / 2;
@@ -122,84 +102,117 @@
           [D2 - 1, D2], //height
           [D2 - 1, D2], //width
           [0, 0]
-        ]); //fill in the array (?
+        ]);
         return a;
       });
+
+      const initState2 = tf.tidy(() => {
+        const D2 = D / 2;
+        const a = seed.pad([
+          [0, 0],
+          [0, D2 * 2 - 1], //height
+          [D2 - 1, D2], //width
+          [0, 0]
+        ]);
+        return a;
+      });
+
+      var consts = [];
+      var models = [];
+
+      for (let i = 0; i < files.length; i++) {
+        var r = await fetch("../output/seal/" + files[i] + ".json");
+        consts[i] = parseConsts(await r.json());
+        models[i] = await tf.loadGraphModel("../output/seal/" + files[i] + ".json");
+        //from SavedModel =>  TensorFlow.js readable
+        Object.assign(models[i].weights, consts[i]);
+      }
+      // console.log(models[modelIndex].weights);
+      // console.log(consts[0]);
+
+      //model weights are all the parameters (including trainable and non-trainable) of the model
+      // which are in turn all the parameters used in the layers of the model
 
       const state = tf.variable(initState);
       const [_, h, w, ch] = state.shape; // => shape of the initial state tensor: (4,2)
 
+      const state2 = tf.variable(initState2);
+      const [_2, h2, w2, ch2] = state2.shape; // => shape of the initial state tensor: (4,2)
+
+      const stateSliced = tf.variable(state.slice([0, 0, 0, 0], [1, 48, 96, 16]));
+      const stateSliced2 = tf.variable(state2.slice([0, 0, 0, 0], [1, 48, 96, 16]));
+
       const damage = (x, y, r) => {
         tf.tidy(() => {
-          const rx = tf.range(0, w).sub(x).div(r).square().expandDims(0);
-          const ry = tf.range(0, h).sub(y).div(r).square().expandDims(1);
-          const mask = rx.add(ry).greater(1.0).expandDims(2);
-          state.assign(state.mul(mask));
+          if (y < h / 2) {
+            const rx = tf.range(0, w).sub(x).div(r).square().expandDims(0);
+            const ry = tf.range(0, h / 2).sub(y).div(r).square().expandDims(1);
+            const mask = rx.add(ry).greater(1).expandDims(2);
+            stateSliced.assign(stateSliced.mul(mask));
+          } else {
+            const rx = tf.range(0, w).sub(x).div(r).square().expandDims(0);
+            const ry = tf.range(h / 2, h).sub(y).div(r).square().expandDims(1);
+            const mask = rx.add(ry).greater(1).expandDims(2);
+            stateSliced2.assign(stateSliced2.mul(mask));
+          }
         });
       }
-
-      const newWord = (x, y, r) => {
-        tf.tidy(() => {
-          const rx = tf.range(0, w).sub(x).div(r).square().expandDims(0);
-          const ry = tf.range(0, h).sub(y).div(r).square().expandDims(1);
-          Object.assign(models[modelIndex], consts[modelIndex])
-          const mask = rx.add(ry).greater(1.0).shape(consts[3], 2);
-          state.assign(state.mul(mask));
-        });
-      }
-
-
       const plantSeed = (x, y) => {
-        const x2 = w - x - seed.shape[2]; //seed => [1,1,1,16]
-        const y2 = h - y - seed.shape[1];
-        if (x < 0 || x2 < 0 || y2 < 0 || y2 < 0)
-          return;
+        var x2 = w * scale - x - seed.shape[2]; //seed => [1,1,1,16]
+        var y2 = h * scale - y - seed.shape[1];
 
+        x = Math.floor(x / 4);
+        x2 = Math.floor(x2 / 4);
+        y = Math.floor(y / 4);
+        y2 = Math.floor(y2 / 4);
+
+        if (x < 0 || x2 < 0 || y2 < 0 || y2 < 0) return;
         // modelIndex++;
         // modelIndex %= files.length;
         // Object.assign(models[modelIndex].weights, consts[modelIndex]);
+        const a = seed.pad([
+          [0, 0],
+          [y, y2],
+          [x, x2],
+          [0, 0]
+        ]);
+        if (y < h / 4) {
+          stateSliced.assign(stateSliced.add(a.slice([0, 0, 0, 0], [1, 48, 96, 16])));
+        } else {
+          stateSliced2.assign(stateSliced2.add(a.slice([0, 48, 0, 0], [1, 48, 96, 16])));
+        }
 
-        tf.tidy(() => {
-          const a = seed.pad([
-            [0, 0],
-            [y, y2],
-            [x, x2], //(x+x2) has to be (w-seed.shape[2]) which equals to w-1; but if add a to x and subtract it back on x2, the seed will move a cells to the left
-            [0, 0]
-          ]);
-          state.assign(state.add(a));
-        });
       }
 
       const scale = 4;
-
       const canvas = document.getElementById('canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = w;
       canvas.height = h;
+
       canvas.style.width = `${w*scale}px`;
       canvas.style.height = `${h*scale}px`;
       canvas.style.display = 'block';
 
-      canvas.style.marginLeft = "28%";
-      canvas.style.marginRight = "5%";
+     canvas.style.marginLeft = "26%";
+      canvas.style.marginRight = "10%";
 
       canvas.onmousedown = e => {
         const rect = canvas.getBoundingClientRect();
-        const x = Math.floor((event.clientX - rect.left) / scale);
-        const y = Math.floor((event.clientY - rect.top) / scale);
+        const x = Math.floor((event.clientX - rect.left));
+        const y = Math.floor((event.clientY - rect.top));
         console.log(x + "," + y);
         if (e.buttons == 1) {
           if (e.shiftKey) {
             plantSeed(x, y);
           } else {
             damage(x, y, 5);
-            //  newWord(x, y, 5);
           }
         }
       }
+
       canvas.onmousemove = e => {
         const rect = canvas.getBoundingClientRect();
-
         const x = Math.floor((event.clientX - rect.left) / scale);
         const y = Math.floor((event.clientY - rect.top) / scale);
         if (e.buttons == 1 && !e.shiftKey) {
@@ -207,52 +220,60 @@
         }
       }
       var stepcount = 0;
-      var plantY = h / 2;
-
-      var stepcount = 0;
-
 
       function step() {
-        // if (stepcount % 300 == 0 && stepcount > 100) {
-        //
-        //   modelIndex++;
-        //   modelIndex = modelIndex % files.length;
-        //   Object.assign(models[modelIndex].weights, consts[modelIndex]);
-        // }
 
-        tf.tidy(() => { //tf.tidy() dispose the non-returned results/tensors
-          state.assign(models[modelIndex].execute({ //.execute(inputs, outputs?)
-            x: state,
+        if (stepcount == 1) {
+          console.log(state.shape);
+        }
+        //state => shape=[1,96(h),96(w),16]
+        tf.tidy(() => {
+          stateSliced.assign(models[3].execute({ //.execute(inputs, outputs)
+            x: stateSliced,
             fire_rate: tf.tensor(0.5), //borning rate?
             angle: tf.tensor(0.0), //rotation angle
-            step_size: tf.tensor(1.0)
+            step_size: tf.tensor(1.0),
+          }, ['Identity']));
+
+          stateSliced2.assign(models[0].execute({ //.execute(inputs, outputs?)
+            x: stateSliced2,
+            fire_rate: tf.tensor(0.5), //borning rate?
+            angle: tf.tensor(0.0), //rotation angle
+            step_size: tf.tensor(1.0),
           }, ['Identity']));
         });
-        console.log(Object.keys(models[modelIndex]));
-      }
 
+      }
 
       function render() {
         stepcount++;
-        if (stepcount % 30 == 0) {
-          if (isPlaying) step();
-        }
-
+        if (isPlaying) step();
         //write in colour data
+
         const imageData = tf.tidy(() => {
-          const rgba = state.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
-          const a = state.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
+          const concatStates = tf.concat([stateSliced, stateSliced2], 1);
+          // if(stepcount==2) console.log(concatStates.shape);
+          const rgba = concatStates.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
+          const a = concatStates.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
           const img = tf.tensor(1.0).sub(a).add(rgba).mul(255);
           const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h => rgba
-
-          // process the colour data here to fit our needs
-          // for (var i = 0; i < rgbaBytes.length; i++) {
-          //   if (rgbaBytes[i] != 255) {
-          //     console.log(i + "," + rgbaBytes[i]);
-          //   }
-          // }
           return new ImageData(rgbaBytes, w, h);
         });
+
+        // for (let i = 0; i < imageData.data.length; i += 4) {
+        //
+        //   // if (i < imageData.data.length / 2) {
+        //     imageData.data[i + 0] = imageData.data[i];
+        //     imageData.data[i + 1] = imageData.data[i + 1];; // G value
+        //     imageData.data[i + 2] = imageData.data[i + 2];
+        //     imageData.data[i + 3] = imageData.data[i + 3];
+        //   // } else {
+        //   //   imageData.data[i + 0] = imageData2.data[i];
+        //   //   imageData.data[i + 1] = imageData2.data[i + 1];; // G value
+        //   //   imageData.data[i + 2] = imageData2.data[i + 2];
+        //   //   imageData.data[i + 3] = imageData2.data[i + 3];
+        //   // }
+        // }
 
         ctx.putImageData(imageData, 0, 0);
         //-------------
@@ -260,7 +281,6 @@
         requestAnimationFrame(render);
       }
       render();
-
     }
     setup();
 

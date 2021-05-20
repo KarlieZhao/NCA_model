@@ -11,12 +11,68 @@
 </head>
 
 <body>
-
   <canvas id='canvas' class="center" style="display: inline-block; margin-left: 20%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+  <p class="center" style="font-size: 20px; font-style: bold; letter-spacing: 0.3em">
+    繁化簡體字 <br> Tradiplified Chinese</p>
+  <br><br>
+  <div class="leftFloating leftCol">
+    <ul>
+      <li> <a href="char_demo.html">Single Character Example | 細胞自動機示例</a>
+      <li> <a href="multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a>
+      <li> <a href="new_characters.html"> Experiment #2 New Characters | 新漢字 </a><br>
+      <li> <a href="../index.html">Back to main page | 返回主頁</a>
+      <li> <a href="experiments/theillegiblestrokes.html"> Experiment #3 The Illegible Strokes, the Vicissitudes of the Words | 讀不出的桑田滄海，沧海桑田 </a>
+      <li>  <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
 
-  <p style="font-size: 30px; text-align:center; font-style: bold;">
-    <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
-  </p>
+    </ul>
+  </div>
+
+  <div class="rightFloating main description">
+    If your computer's fan is running insanely fast and you feel your cpu is going to burn,
+    <button type="button" id="bt" onclick="playPause()">Click me to pause</button> the above script.
+    <br><br>
+    The history of reforming and simplifying Chinese characters is almost as long as the Chinese characters themselves.
+    In different dynasties, Chinese characters have undergone several great changes, from Oracle to the Seal script (篆书) and clerical script (隶书),
+    and finally to our familiar regular (楷書) traditional script and simplified Chinese.
+    Different from most western languages, the evolution of written Chinese was not just on the level of
+    typography, but more about changes on the structural side.
+    <br><br>
+    In the 1950s, the State Council of the People's Republic of China published the simplified norms of Chinese characters, marking the start of the largest reform of characters in modern Chinese history.
+    Around 2,200 characters are simplified, according to the record on the Simplified Chinese characters List (簡化字總表).
+    These characters, in general, are simplified following 6 manners:
+    <ul>
+      <li>Cutting/simplifying a half (刪減片旁)
+      <li>New designed characters (新形聲字)
+      <li>Borrowing the writing from its homophones (同音假借)
+      <li>Following the ancient way of writing (從古)
+      <li>Following the folk way of writing (從俗)
+      <li>Following the writing of the Cursive script (草書楷化)
+      <li>Several characters following one way of writing (從俗合併)
+    </ul>
+    <br>
+
+    In this experiement, I picked the most representative characters that have been simplified according to the above 6 ways.
+    Those characters are listed below, on the left is the traditional script and on the right is simplified, as you might already can tell.
+    <br>
+    <br>
+    <span style="width: 20%;  margin-right: 4em;">
+      <img src="demo_images/tradiplified/bu.png"></img> Borrowing the writing from its homophones (同音假借) <br>
+
+      <img src="demo_images/tradiplified/hu.png"></img> New designed characters (新形聲字, 刪減片旁) <br>
+
+      <img src="demo_images/tradiplified/wang.png"></img> Following the ancient way of writing (Kangxi Dictionary, 1710) (從古, 康熙字典)
+      <br>
+      <img src="demo_images/tradiplified/wei.png"></img> Following the folk way of writing; 卫 is introduced from Japan (从俗, “卫”從日本傳入)
+      <br>
+      <img src="demo_images/tradiplified/xie.png"></img>Following the writing of the Cursive scirpt (草書楷化)
+      <br>
+      <img src="demo_images/tradiplified/ye.png"></img>Several characters following one way of writing (從俗合併, 原字為“叶（shè）”公好龍)
+    </span>
+    <br><br>
+    To be continued...
+    <br><br><br><br><br><br> <br><br> <br>
+
+  </div>
 
   <script>
     "use strict";
@@ -166,13 +222,6 @@
       var stepcount = 0;
 
       function step() {
-        stepcount++;
-        if (stepcount % 300 == 0 && stepcount > 100) {
-          //console.log(stepcount);
-          modelIndex++;
-          modelIndex = modelIndex % files.length;
-          Object.assign(models[modelIndex].weights, consts[modelIndex]);
-        }
         tf.tidy(() => { //tf.tidy() dispose the non-returned results/tensors
           state.assign(models[modelIndex].execute({
             x: state,
@@ -191,8 +240,10 @@
 
       function render() {
         //update every frame
-        step();
-        stepcount++;
+        if (isPlaying) {
+          step();
+          stepcount++;
+        }
         if (stepcount % 100 == 0) {
           // console.log(seedx + "," + seedy);
           plantSeed(seedx, seedy);
@@ -242,6 +293,19 @@
 
     }
     setup();
+
+    let isPlaying = true;
+
+    function playPause() {
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        document.getElementById("bt").innerHTML = "Click me to pause";
+
+      } else {
+        document.getElementById("bt").innerHTML = "Click again to continue";
+
+      }
+    }
   </script>
 
   <!-- Page footer -->

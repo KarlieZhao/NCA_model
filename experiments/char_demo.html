@@ -16,7 +16,7 @@
 
       <canvas id='canvas' class="center main" style="display: inline-block; border: 1px solid black; image-rendering: pixelated;"></canvas>
       <br>
-      <select name="selector" id="selector" onchange="setup()">
+      <select name="selector" id="selector" onchange="renew()">
         <option value="han_trad_12000">漢</option>
         <option value="zi_trad_12000">字</option>
         <option value="hanzi_2100">漢字</option>
@@ -31,9 +31,13 @@
       <p style="font-size: 30px; text-align:center; font-style: bold;">
         <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
       </p>
-      <p><a href="https://mathworld.wolfram.com/CellularAutomaton.html" target="_blank">What is a cellular automata?</a></p>
       <p style="text-align:center;">Click & move your left mouse button to wipe off a part of the character.<br>
         Shift + LMB to plant a seed.</P>
+
+      <p><a href="https://mathworld.wolfram.com/CellularAutomaton.html" target="_blank">What is a cellular automata?</a>
+        <br><a href="https://distill.pub/2020/selforg/" target="_blank">What is a neural cellular automata?</a>
+      </p>
+
     </div>
 
     <div class="leftFloating leftCol">
@@ -41,11 +45,12 @@
         <li> <a href="../index.html">Back to main page | 返回主頁</a>
         <li> <a href="multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a>
         <li> <a href="new_characters.html"> Experiment #2 New Characters | 新漢字 </a><br>
-        <li> <a href="theillegiblestrokes.html"> Experiment #3 The Illegible Strokes, the Vicissitudes of the World | 讀不出的桑田滄海，沧海桑田 </a><br>
-        <li> <a href="../documentation.html"> Research, writing, and documentation | 記錄與反思 </a><br>
+        <li> <a href="theillegiblestrokes.html"> Experiment #3 The Illegible Strokes, the Vicissitudes of the Words | 讀不出的桑田滄海，沧海桑田 </a><br>
+        <li> <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
 
       </ul>
     </div>
+
 
   </div>
   <script>
@@ -87,14 +92,35 @@
       }));
       return consts;
     }
+    var consts = [];
+    var models = [];
 
     const setup = async () => {
-      var fileName = document.getElementById("selector").value;
-      const r = await fetch("../output/trad/" + fileName + ".json"); //"../outputData/trad/"
-      const consts = parseConsts(await r.json());
+      let crtmodel = 0;
 
-      const model = await tf.loadGraphModel("../output/trad/" + fileName + ".json");
-      Object.assign(model.weights, consts);
+      let files = [];
+      files[0] = "han_trad_12000";
+      files[1] = "zi_trad_12000";
+      files[2] = "hanzi_2100";
+      files[3] = "feng_trad";
+      files[4] = "ya_trad";
+      files[5] = "song_trad";
+      files[6] = "lin_trad_12000";
+      files[7] = "sen_trad_12000";
+
+      for (let i = 0; i < files.length; i++) {
+        var r = await fetch("data/" + files[i] + ".json");
+        consts[i] = parseConsts(await r.json());
+        models[i] = await tf.loadGraphModel("data/" + files[i] + ".json");
+        Object.assign(models[i].weights, consts[i]);
+      }
+
+      var crtfileName = document.getElementById("selector").value;
+      for (var i = 0; i < files.length; i++) {
+        if (crtfileName == files[i]) {
+          crtmodel = i;
+        }
+      }
 
       let seed = new Array(16).fill(0).map((x, i) => i < 3 ? 0 : 1);
       seed = tf.tensor(seed, [1, 1, 1, 16]);
@@ -177,7 +203,7 @@
       function step() {
 
         tf.tidy(() => { //tf.tidy() dispose the non-returned results/tensors
-          state.assign(model.execute({
+          state.assign(models[crtmodel].execute({
             x: state,
             fire_rate: tf.tensor(0.5), //borning rate?
             angle: tf.tensor(0.0), //rotation angle
@@ -186,9 +212,22 @@
         });
       }
 
+
       function render() {
         //update every frame
         step();
+
+        if (newModel) {
+          crtfileName = document.getElementById("selector").value;
+          for (var i = 0; i < files.length; i++) {
+            if (crtfileName == files[i]) {
+              crtmodel = i;
+            }
+          }
+          damage(w / 2, h / 2, w * 2);
+          plantSeed(w / 2, h / 2);
+          newModel = false;
+        }
         //write in colour data
         const imageData = tf.tidy(() => {
           const rgba = state.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
@@ -208,15 +247,20 @@
 
     }
     setup();
+    let newModel = false;
+
+    function renew() {
+      newModel = true;
+    }
   </script>
 
   <!-- Page footer -->
-  <!-- <footer>
+  <footer>
 
     <p style=" position: fixed;left: 0;
-   bottom: 0; width: 98%; text-align: right;">
+   bottom: 0; width: 98%; text-align: right;font-size: 5px;">KARLIE ZHAO @2021
     </p>
-  </footer> -->
+  </footer>
 </body>
 
 

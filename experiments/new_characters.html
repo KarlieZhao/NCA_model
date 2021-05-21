@@ -11,29 +11,58 @@
 </head>
 
 <body>
-  <div class="parent">
-    <div class=" center main">
-      <br>
-      <canvas id='canvas' style="display: inline-block;  margin-top: 10%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+  <div class="center main">
+    <br>
+    <canvas id='canvas' style="margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
 
-      <br>
-      <button type="button" id="bt" onclick="nextModel()">Next</button>
+    <br>
+    <button type="button" id="bt" onclick="nextModel()">Next</button>
 
-      <p style="font-size: 30px; font-style: bold;">
-        <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters
-      </p>
-    </div>
-    <div class="leftFloating leftCol">
-      <ul>
-        <li> <a href="char_demo.html">Single Character Example | 細胞自動機示例</a>
-        <li> <a href="multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a>
-        <li> <a href="../index.html">Back to main page | 返回主頁</a>
-        <li> <a href="experiments/theillegiblestrokes.html"> Experiment #3 The Illegible Strokes and Its Own Vicissitudes | 讀不出的桑田滄海，沧海桑田 </a>
-        <li>  <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
-</ul>
-    </div>
+    <p style="font-size: 30px; font-style: bold;">
+      <span style="font-size: 50px;">N</span>ew <span style="font-size: 50px;">C</span>har<span style="font-size: 50px;">A</span>cters | 新漢字
+    </p>
+
+    <br><br>
 
   </div>
+
+  <div class="leftFloating leftCol" style="margin-top: 2%">
+
+    <ul>
+      <li> <a href="char_demo.html">Single Character Example | 細胞自動機示例</a>
+      <li> <a href="multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a>
+      <li> <a href="../index.html">Back to main page | 返回主頁</a>
+      <li> <a href="theillegiblestrokes.html"> Experiment #3 The Illegible Strokes and Its Own Vicissitudes | 讀不出的桑田滄海，沧海桑田 </a>
+      <li> <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
+    </ul>
+  </div>
+
+
+  <div class="rightFloating main description">
+    <div style="margin-left: 5%">
+      Chinese characters, with its own special structural regulation, can be divided into different components according to their positioal arrangement.
+      So this is an experiment where I tried to divide the canvas into different parts and run multiple CA rules on one canvas.
+      Ideally, we may see parts of different characters communicate/merge with each other.
+      <br><br>
+      Unfortunatly, it might be a silly idea to run multiple rules on one CA, since this kind of automaton is designed for running one rule uniformly to all the cells.
+      Even though I tried to have multiple rules executed on one canvas, it turned out that the states of the cells in different rules cannot be shared.
+      This means, they cannot really communicate as expected.
+      <br><br>
+
+      I gave up working on this experiment very soon when I figure out the idea doesn't work, but still put the result here for documentation.
+      I'm also thinking about other ways to implement this idea...
+      <br><br>
+      Please <a href="mailto: karliedoesnotexist@gmail.com">leave a message </a>if you found this interesting, or have some suggestions. Much appreciated!
+
+      <br>
+      <br>
+      <br>
+      <br>
+
+    </div>
+  </div>
+
+
   <script>
     "use strict";
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -296,12 +325,12 @@
   </script>
 
   <!-- Page footer -->
-  <!-- <footer>
+  <footer>
 
     <p style=" position: fixed;left: 0;
-   bottom: 0; width: 98%; text-align: right;">
+   bottom: 0; width: 98%; text-align: right;font-size: 5px;">KARLIE ZHAO @2021
     </p>
-  </footer> -->
+  </footer>
 </body>
 
 

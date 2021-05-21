@@ -22,7 +22,7 @@
       <li> <a href="new_characters.html"> Experiment #2 New Characters | 新漢字 </a><br>
       <li> <a href="../index.html">Back to main page | 返回主頁</a>
       <li> <a href="experiments/theillegiblestrokes.html"> Experiment #3 The Illegible Strokes and Its Own Vicissitudes | 讀不出的桑田滄海，沧海桑田 </a>
-      <li>  <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
+      <li> <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
 
     </ul>
   </div>
@@ -47,30 +47,35 @@
       <li>Following the ancient way of writing (從古)
       <li>Following the folk way of writing (從俗)
       <li>Following the writing of the Cursive script (草書楷化)
-      <li>Several characters following one way of writing (從俗合併)
+      <li>Merging several characters into one way of writing (從俗合併)
     </ul>
     <br>
 
-    In this experiement, I picked the most representative characters that have been simplified according to the above 6 ways.
-    Those characters are listed below, on the left is the traditional script and on the right is simplified, as you might already can tell.
+    In this experiement, I selected the some representative characters that have been simplified according to the above 6 ways.
+    Those characters are listed below, the traditional version is on the left is the and the simplified version is on the right, as you might already can tell.
     <br>
     <br>
     <span style="width: 20%;  margin-right: 4em;">
       <img src="demo_images/tradiplified/bu.png"></img> Borrowing the writing from its homophones (同音假借) <br>
-
       <img src="demo_images/tradiplified/hu.png"></img> New designed characters (新形聲字, 刪減片旁) <br>
-
-      <img src="demo_images/tradiplified/wang.png"></img> Following the ancient way of writing (Kangxi Dictionary, 1710) (從古, 康熙字典)
-      <br>
-      <img src="demo_images/tradiplified/wei.png"></img> Following the folk way of writing; 卫 is introduced from Japan (从俗, “卫”從日本傳入)
-      <br>
-      <img src="demo_images/tradiplified/xie.png"></img>Following the writing of the Cursive scirpt (草書楷化)
-      <br>
-      <img src="demo_images/tradiplified/ye.png"></img>Several characters following one way of writing (從俗合併, 原字為“叶（shè）”公好龍)
+      <img src="demo_images/tradiplified/wang.png"></img> Following the ancient way of writing (Kangxi Dictionary, 1710) (從古, 康熙字典)<br>
+      <img src="demo_images/tradiplified/wei.png"></img> Following the folk way of writing; 卫 is introduced from Japan (从俗, “卫”從日本傳入)<br>
+      <img src="demo_images/tradiplified/xie.png"></img>Following the writing of the Cursive scirpt (草書楷化)<br>
+      <img src="demo_images/tradiplified/ye.png"></img>Merging several characters into one way of writing (從俗合併, 原字為“叶（shè）”公好龍)
     </span>
     <br><br>
-    To be continued...
-    <br><br><br><br><br><br> <br><br> <br>
+    The canvas will go through each character in turn, and for each character,
+    its traditional and simplified version will be aligned side by side, closed to each other. The layout makes the characters in the two script merge into one in a special way, indistinct from each other.
+    <br><br>
+    This is a quite rough prototype of what I really wanted to explore: the transformation from traditional Chinese to simplified, or vice versa, and the delicate bond between them.
+    How were the characters got simplified? Why were they simplified like this? What did we gain and lose from the simplification of Chinese characters?
+    <br><br>We need to notice that the evolution of Chinese characters is closely related to the historical background. But in contemporary society when technology started to dominate society, how will Chinese characters develop?
+
+    Will Chinese characters continue to be simplified? If so, then what would the ultimate form of simplified characters be like?
+    Or whether there will be one day, people started to complicate the characters again?
+    <br><br>
+    Further improvement: differentiable-morphogenesis / training with multiple targets. To be continued.
+    <br><br><br><br><br><br>
 
   </div>
 
@@ -244,6 +249,7 @@
           step();
           stepcount++;
         }
+
         if (stepcount % 100 == 0) {
           // console.log(seedx + "," + seedy);
           plantSeed(seedx, seedy);
@@ -309,12 +315,12 @@
   </script>
 
   <!-- Page footer -->
-  <!-- <footer>
+  <footer>
 
     <p style=" position: fixed;left: 0;
-   bottom: 0; width: 98%; text-align: right;">
+   bottom: 0; width: 98%; text-align: right;font-size: 5px;">KARLIE ZHAO @2021
     </p>
-  </footer> -->
+  </footer>
 </body>
 
 

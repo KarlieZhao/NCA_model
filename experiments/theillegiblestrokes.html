@@ -29,24 +29,27 @@
       <li> <a href="multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a>
       <li> <a href="new_characters.html"> Experiment #2 New Characters | 新漢字 </a><br>
       <li> <a href="../index.html">Back to main page | 返回主頁</a>
-        <li>  <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
+      <li> <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
 
     </ul>
   </div>
 
   <div class="rightFloating main description">
 
-    If your computer's fan is running so fast that you feel your cpu is going to burn,
+    If your computer's fan is running insanely fast and you feel your cpu is going to burn,
     <button type="button" id="bt" onclick="playPause()">Click me to pause</button> the above script.
 
     <br><br>
-    “滄海桑田” is an idiom in Chinese, referring to the wide sea (滄海) and fields for planting trees and crops (桑田) in literal. But these two words are often combined as a whole, used to describe the “great changes are seen in the course of time”, the
+    “滄海桑田” is an idiom in Chinese, referring to the wide sea (滄海) and fields for planting crops (桑田) in literal.
+    But these two words are often used as a whole, describing the “great changes are seen in the course of time”, the
     transformations of the worldly things are like the sea turning into a farming field.
     <br><br>
-    Somehow I found it is also appropriate for describing the ever-changing forms of characters. In this experimental work, I train the NCA model with
+    Somehow I found it is also appropriate for describing the ever-changing forms of characters.
+    In this experimental work, I train the NCA model with
     images of the word “桑田滄海” in the seal, traditional and simplified scripts. The alignments of the
-    characters vary from script to script, according to their user’s common writing habits. As the pictures shown below, the words in the seal script are vertically aligned, read from right to left, while the simplified version is aligned
-    horizontally, as how people read today. <br>
+    characters vary from script to script, according to their user’s common writing habits.
+    As the pictures shown below, the words in the seal script are vertically aligned, read from right to left,
+    while the simplified version is aligned horizontally, as how people read today. <br>
     <br>
     <br>
     <img src="demo_images/chst_seal_highres.png" style="margin-right: 1em;"></img>
@@ -58,10 +61,11 @@
     <br>
     After training the model for a couple of hours, I ended up with dozens of JSON files containing the rules to drive the CA.
 
-    Those files were exported after the models were trained 1000, 2000...16,000 steps. With the number of the steps increasing, the ability of the CA to generate new patterns and to recover the damage get improved.
-    However, what we want probably is not a perfect rule that can accurately generate the original characters and recover any damage without errors. What we are expecting might be some stages in between, where sometimes glitches happen, sometimes
-    surprises emerge.
-    Therefore, I selected some of the models that can be executed by the CA quite stably, but meanwhile has uncertain cells oscillating between different states.
+    Those files were exported after the models were trained for 1000, 2000...16,000 steps.
+    With the number of the steps increasing, the ability of the CA to generate given patterns and to recover the damage get improved.
+    However, what we want probably is not a perfect rule that can accurately generate the original characters and recover any damage without errors.
+    What we are expecting might be some stages in between, where sometimes glitches happen and surprises emerge.
+    Therefore, I selected some of the models that can be executed by the CA quite stably, but meanwhile has certain cells oscillating between different states.
     <br><br>
     The CA model starts with generating the seal script version of the words but jumps to another random rule from time to time,
     generating another script based on the current active cells.
@@ -79,19 +83,14 @@
 
     You can also press your left mouse button on the canvas to interact with it. The misty greyscale shade is so
     reminiscent of Chinese calligraphy and ink painting.
-    <br>
-    <br>
-
-    Today people consider that the second round of Chinese Character Simplification programme kind of went too far...but who knows?
-    What is the future of Chinese characters? Will it be keeping simplified to strokes and marks? Or perhaps it will go on another way?
-
-    <br>
-    <br> One thing that I found very interesting about cellular automata is the complexity sometimes shown in its behaviour, classified as class 4 by Stephen Wolfram. Local changes to the initial pattern may spread indefinitely, leading to completely
+    <br> <br>
+    One thing that I found very interesting about cellular automata is the complexity sometimes shown in its behaviour, classified as class 4 by Stephen Wolfram. Local changes to the initial pattern may spread indefinitely, leading to completely
     different results. However, it can be tricky to design the rules and initial states of the cells.
     <br>
     <br>
     The neural network, in another way, makes up for this deficiency. Each time you run this page, you will get a dynamic visual that is entirely different from any other ones that you previously get. Actually, the outcome in each run is
-    unique and hard to reproduce.Actually, the outcome in each run is unique and hard to reproduce. There are so many possibilities, and anything could happen, just due to the tiny uncertainty of the initial cells' states.
+    unique and hard to reproduce.
+    There are so many possibilities, and anything could happen, just due to the tiny uncertainty of the initial cells' states.
     <br>
     <br>
     而且我又有這樣的設想：也許五十年後，由於科學進步，電子打字機普遍了，漢字不再是機械化的障礙，而由於教學法的改進，認為漢字也不像現在那樣費時，那麼，「輿論」也許又變了方向，以為保存數千年的民族文字（漢字）是必要的了。

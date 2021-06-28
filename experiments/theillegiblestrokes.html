@@ -209,6 +209,22 @@
         });
       }
 
+      const plantSeed = (x, y) => {
+        const x2 = w - x - seed.shape[2]; //seed => [1,1,1,16]
+        const y2 = h - y - seed.shape[1];
+        if (x < 0 || x2 < 0 || y2 < 0 || y2 < 0)
+          return;
+        tf.tidy(() => {
+          const a = seed.pad([
+            [0, 0],
+            [y, y2],
+            [x, x2], //(x+x2) has to be (w-seed.shape[2]) which equals to w-1; but if add a to x and subtract it back on x2, the seed will move a cells to the left
+            [0, 0]
+          ]);
+          state.assign(state.add(a));
+        });
+      }
+
       const scale = 4;
 
       const canvas = document.getElementById(`canvas0`);
@@ -269,6 +285,7 @@
         }
 
         //write in colour data
+        let isEmpty = 0;
 
         const imageData = tf.tidy(() => {
           const rgba = state.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
@@ -283,9 +300,17 @@
           imageData.data[i + 0] = grey;
           imageData.data[i + 1] = grey;
           imageData.data[i + 2] = grey;
+
+          // if (imageData.data[i + 3] == 0) {
+          //   isEmpty++;
+          // }
         }
 
         ctx.putImageData(imageData, 0, 0);
+        // if (isEmpty >= imageData.data.length - 5) {
+        //   plantSeed(w / 2, h / 2);
+        //   console.log("new seed");
+        // }
         //-------------
 
         requestAnimationFrame(render);

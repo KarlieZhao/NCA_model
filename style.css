@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC&display=swap');
+
+* {
+  font-family: 'Noto Sans', sans-serif;
+}
+
 .canvas-container {
   width: 100%;
   text-align: center;

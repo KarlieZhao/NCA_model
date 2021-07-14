@@ -10,10 +10,22 @@
   text-align: center;
 }
 
+
+li{
+  margin-bottom: 10px;
+}
+
 #canvas {
   display: inline-block;
 }
 
+.logo{
+  width: 100px;
+}
+
+.b2mp{
+  font-weight: bold;
+}
 .center {
   text-align: center;
   width: auto;
@@ -31,11 +43,16 @@
   margin-top: 10%;
   width: 30%;
   line-height: 2em;
+  font-size: 1.1em;
 }
 
 .text {
   line-height: 2.3em;
   font-size: 1em;
+}
+
+.mainPageLinks {
+  font-size: 1.15em;
 }
 
 .rightFloating {

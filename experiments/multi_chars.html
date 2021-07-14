@@ -5,13 +5,19 @@
   <meta charset="UTF-8" />
   <title>New CharActers</title>
 
+  <link rel="stylesheet" href="../animate.min.css" />
+  <link rel="stylesheet" href="../bootstrap.css" />
+  <link rel="stylesheet" href="../bootstrap.min.css" />
   <link rel="stylesheet" href="../style.css" />
+
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.3.0/dist/tf.min.js"></script>
 
 </head>
 
 <body>
-  <canvas id='canvas' class="center" style="display: inline-block; margin-left: 20%; margin-top: 5%; border: 1px solid black; image-rendering: pixelated;"></canvas>
+  <canvas id='canvas' class="center" style="width: 768px; height: 768px; display: block; margin-left: 28%; margin-top: 2%; border: 1px solid black; image-rendering: pixelated; margin-right: 5%;">
+ </canvas>
+  <br>
   <p class="center" style="font-size: 20px; font-style: bold; letter-spacing: 0.3em">
     繁化簡體字 <br> Tradiplified Chinese</p>
   <br><br>
@@ -20,7 +26,7 @@
       <li> <a href="char_demo.html">Single Character Example | 細胞自動機示例</a>
       <li> <a href="multi_chars.html">Experiment #1 Tradiplified Chinese | 繁化簡體字 </a>
       <li> <a href="new_characters.html"> Experiment #2 New Characters | 新漢字 </a><br>
-      <li> <a href="../index.html">Back to main page | 返回主頁</a>
+      <li> <a href="../index.html" class="b2mp">Back to main page | 返回主頁</a>
       <li> <a href="experiments/theillegiblestrokes.html"> Experiment #3 The Illegible Strokes and Its Own Vicissitudes | 讀不出的桑田滄海，沧海桑田 </a>
       <li> <a href="https://observablehq.com/@wenrazhao2/final-project-documentation" target="_blank"> Research, writing, and documentation | 記錄與反思 </a><br>
 
@@ -39,7 +45,7 @@
     <br><br>
     In the 1950s, the State Council of the People's Republic of China published the simplified norms of Chinese characters, marking the start of the largest reform of characters in modern Chinese history.
     Around 2,200 characters are simplified, according to the record on the Simplified Chinese characters List (簡化字總表).
-    These characters, in general, are simplified following 6 manners:
+    These characters, in general, are simplified following 6 manners:<br><br>
     <ul>
       <li>Cutting/simplifying a half (刪減片旁)
       <li>New designed characters (新形聲字)

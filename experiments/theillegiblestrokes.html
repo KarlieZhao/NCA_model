@@ -244,7 +244,6 @@
         const rect = canvas.getBoundingClientRect();
         const x = Math.floor((event.clientX - rect.left) / scale);
         const y = Math.floor((event.clientY - rect.top) / scale);
-        // console.log(x + "," + y);
         if (e.buttons == 1) {
           damage(x, y, 5);
         }
@@ -304,24 +303,32 @@
           imageData.data[i + 0] = grey;
           imageData.data[i + 1] = grey;
           imageData.data[i + 2] = grey;
-
-          // if (imageData.data[i + 3] == 0) {
-          //   isEmpty++;
-          // }
+          if (grey == 255) {
+            isEmpty++;
+          }
         }
-
+        //console.log(isEmpty); //41472
         ctx.putImageData(imageData, 0, 0);
-        // if (isEmpty >= imageData.data.length - 5) {
-        //   plantSeed(w / 2, h / 2);
-        //   console.log("new seed");
-        // }
-        //-------------
 
+        if (isEmpty >= 40000 && !cooling) {
+          cooling = true;
+          plantSeed(w / 2, h / 2);
+          //console.log("new seed");
+        } else if (cooling) {
+          coolingTime++;
+          if (coolingTime == 200) {
+            coolingTime = 0;
+            cooling = false;
+          }
+        }
         requestAnimationFrame(render);
       }
       render();
     }
     setup();
+
+    let coolingTime = 0;
+    let cooling = true;
 
     let stepcount = 0;
     let timeout = 370;
@@ -331,10 +338,8 @@
       isPlaying = !isPlaying;
       if (isPlaying) {
         document.getElementById("bt").innerHTML = "Click me to pause";
-
       } else {
         document.getElementById("bt").innerHTML = "Click again to continue";
-
       }
     }
   </script>
@@ -343,10 +348,9 @@
   <footer>
 
     <p style=" position: fixed;left: 0;
-   bottom: 0; width: 98%; text-align: right;font-size: 5px;">KARLIE ZHAO @2021
+   bottom: 0; width: 98%; text-align: right;font-size: 10px;">KARLIE ZHAO @2021
     </p>
   </footer>
 </body>
-
 
 </html>

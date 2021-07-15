@@ -10,8 +10,7 @@
   text-align: center;
 }
 
-
-li{
+li {
   margin-bottom: 10px;
 }
 
@@ -19,13 +18,14 @@ li{
   display: inline-block;
 }
 
-.logo{
+.logo {
   width: 100px;
 }
 
-.b2mp{
+.b2mp {
   font-weight: bold;
 }
+
 .center {
   text-align: center;
   width: auto;

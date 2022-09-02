@@ -241,7 +241,7 @@
           const rgba = state.slice([0, 0, 0, 0], [-1, -1, -1, 4]);
           const a = state.slice([0, 0, 0, 3], [-1, -1, -1, 1]);
           const img = tf.tensor(1.0).sub(a).add(rgba).mul(255);
-          const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h => rgba: why all are 255?
+          const rgbaBytes = new Uint8ClampedArray(img.dataSync()); //length: 4*w*h 
 
           return new ImageData(rgbaBytes, w, h);
         });
